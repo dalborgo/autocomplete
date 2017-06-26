@@ -1,0 +1,10 @@
+{
+        "sSearch": "Cerca:",
+        "sEmptyTable": "Nessun risultato.",
+         "oPaginate": {
+                                        "sFirst":    "  <<  ",
+                                        "sPrevious": " < ",
+                                        "sNext":     " > ",
+                                        "sLast":     "  >>  "
+                                }
+}
