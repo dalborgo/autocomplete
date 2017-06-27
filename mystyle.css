@@ -1,0 +1,153 @@
+#textarea2 {
+    width: 300px;
+    height: 25px;
+    font-size: 13pt;
+}
+
+div.text-core {
+    float: left;
+}
+
+table#example3 td.center {
+    text-align: center;
+}
+
+table#example3 {
+    font-size: 9pt;
+    width: 100%;
+}
+
+body#mysh {
+    font-size: 14pt;
+    font-family: sans-serif;
+}
+
+form.modulo{
+    width: 500px;
+    margin-bottom: 0.5em;
+}
+table{
+    margin-bottom: 1em;
+    font-size: 11pt;
+    width: 500px;
+    border: 1px solid gray;
+}
+
+
+
+table tr td{
+    text-align:right;
+}
+table tr td:nth-child(-n+2){
+     text-align:center;
+ }
+form.modulo input[type='text']{
+    width:50px;
+}
+
+form.modulo label{
+    margin-left: 0.5ex;
+    font-size: 12pt;
+}
+
+form.modulo input{
+    margin-right: 0.5ex;
+}
+
+#intest{
+    margin: 2em 0.5em 1em;
+    background-color: ivory;
+    border: 1px solid lightgray;
+    border-radius: 17px;
+    display: table;
+    font-size: 16pt;
+    padding: 0.5ex 1ex;
+}
+
+#output{
+    margin: 1em 0.5em;
+    width:100%;
+}
+
+div.cerca {
+    float: left;
+    margin-right: 10px;
+    margin-left: 0.5ex;
+    color: white;
+}
+
+#wait {
+    float: right;
+    display: none;
+}
+fieldset{
+    border: #bccccb solid thin;
+    padding: 2ex 1ex;
+    background-color: teal;
+    border-radius: 5px;
+    color: white;
+}
+legend{
+    font-size: 12pt;
+    border: #bccccb solid thin;
+    padding: 0.5ex 1ex;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    color: black;
+}
+
+#tutto {
+    background-color: steelblue;
+    border: thin solid lightgray;
+    border-radius: 10px;
+    height: 50px;
+    margin-top: 3ex;
+    padding: 25px 10px 0;
+    width: 390px;
+    margin: 2ex;
+}
+
+.scheda{
+    float: left;
+    margin-right: 3ex;
+}
+
+.rainbow {
+    background-image: -webkit-gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2),color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22) );
+    background-image: gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2),color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22) );
+    color:transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.stroke { color: black; -webkit-text-fill-color: white; /* Will override color (regardless of order) */ -webkit-text-stroke-width: thin; -webkit-text-stroke-color: black; }
+
+thead{
+    background-color: steelblue;
+    color: white;
+}
+
+
+tbody tr:nth-child(even) { background-color: #ccc; }
+
+tbody tr:nth-child(2n) {
+    background-color: lightslategrey;
+    color: white;
+    background-color: #008080;
+
+}
+th{
+    padding:0.6ex;
+}
+
+.nod-success {
+
+}
+
+.nod-error {
+
+}
+
+.nod-error-message {
+    color: red;
+}

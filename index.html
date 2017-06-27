@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>MyShark</title>
+    <title>Fotocopie</title>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" type="text/css" href="mystyle.css">
     <script src="./js/jquery-1.8.2.js" type="text/javascript" charset="utf-8"></script>
@@ -16,38 +16,18 @@
     <script src="./textext/js/textext.plugin.focus.js" type="text/javascript" charset="utf-8"></script>
     <script src="./textext/js/textext.plugin.ajax.js" type="text/javascript" charset="utf-8"></script>
     <script src="./textext/js/textext.plugin.arrow.js" type="text/javascript" charset="utf-8"></script>
-    <style>
-        #textarea2 {
-            width: 300px;
-            height: 25px;
-            font-size: 13pt;
-        }
 
-        div.text-core {
-            float: left;
-        }
-
-        table#example3 td.center {
-            text-align: center;
-        }
-
-        table#example3 {
-            font-size: 9pt;
-            width: 100%;
-        }
-
-        body#mysh {
-            font-size: 14pt;
-            font-family: sans-serif;
-        }
-
-        div.ui-datepicker, .ui-datepicker td {
-            font-size: 12px;
-        }
-    </style>
     <script type="text/javascript">
-        var nome = '';
-        var id = -1;
+        var nome = 'Agricola Andreoli';
+        var id = 10;
+
+        Number.prototype.format = function(n, x, s, c) {
+            var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
+                num = this.toFixed(Math.max(0, ~~n));
+
+            return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
+        };
+
         $(document).ajaxStart(function () {
             $("#wait").css("display", "block");
         });
@@ -59,14 +39,56 @@
         $(function () {
             $('#textarea2').on('hideDropdown', function (data) {
                 //  var m=$('#textarea2').textext()[0];
-                var out = $('#textarea2').val().split(',');
-                nome = out[0];
-                id = out[1];
-                $('#textarea2').val('');
+                var ex=$('#textarea2');
+                var out = ex.val().split(',');
+                if(out.length>1) {
+                    nome = out[0];
+                    id = out[1];
+                }
+                ex.val('');
+                $('#intest').show();
                 cerca();
             });
         });
+
+        function scrivi(ids) {
+            $.ajax({
+                type: "GET",
+                url: "scrivi.php",
+                contentType: "application/json; charset=utf-8",
+                data: {
+                    mese: $('#mese' + ids).val(),
+                    anno: $('#anno' + ids).val(),
+                    fotocopie: $('#fotocopie' + ids).val(),
+                    id: $('#id_f' + ids).val()
+                },
+                datatype: "json",
+                error: function (textStatus, errorThrown) {
+
+                },
+                success: function (result) {
+                    cerca();
+                }
+            });
+        }
+        function elimina(mese, anno, ids) {
+            $.ajax({
+                type: "GET",
+                url: "elimina.php",
+                contentType: "application/json; charset=utf-8",
+                data: {mese: mese, anno: anno, id: ids},
+                datatype: "json",
+                error: function (textStatus, errorThrown) {
+
+                },
+                success: function (result) {
+                    cerca();
+                }
+            });
+        }
+
         function cerca() {
+            var mesil = ['', 'Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
             $.ajax({
                 type: "GET",
                 url: "ajaxsh.php",
@@ -80,22 +102,26 @@
                 },
                 success: function (result) {
 
-                    $("#intest").html(nome);
+                    $("#intest").html(nome + ' id: ' + id);
 
                     var id_prec = -1;
                     var usc = '';
                     result.forEach(function (entry) {
                         if (id_prec !== entry.fotocop_id) {
                             if (usc !== '')
-                                usc += '</table>';
-                            usc += '<table><thead><th>Mese</th><th>Anno</th><th>Fotocopie</th><th>Differenza</th></thead>';
+                                usc += '</tbody></table></div>';
+                            usc += "<div class='scheda'><form action='#' id='input" + entry.fotocop_id + "' class='modulo' style='' method='get'> <fieldset> <legend>" + entry.nome_lun + "</legend> <label for='mese'>Mese: </label><input type='text' id='mese" + entry.fotocop_id + "'> <label for='anno'>Anno: </label><input type='text' id='anno" + entry.fotocop_id + "' value='2017'> <label for='anno'>Fotocopie: </label><input type='text' id='fotocopie" + entry.fotocop_id + "'><input type='text' id='id_f" + entry.fotocop_id + "' value='" + entry.fotocop_id + "' style='display: none'> <input type='submit' id='invia" + entry.fotocop_id + "' value='Inserisci' onclick='scrivi(" + entry.fotocop_id + ")'> </fieldset> </form>";
+
+                            usc += '<table cellspacing="0"><thead><th>Mese</th><th>Anno</th><th style="text-align: right">Fotocopie</th><th style="text-align: right">Differenza</th><th></th></thead><tbody>';
                             id_prec = entry.fotocop_id;
                         }
-                        usc += '<tr><td>' + entry.mese + '</td></tr>';
+                        if(entry.anno)
+                            usc += '<tr><td>' + mesil[entry.mese] + '</td><td>' + entry.anno + '</td><td>' + ((entry.numero)*1).format(0, 3, '.', ',')+ '</td><td>' + ((entry.diff)*1).format(0, 3, '.', ',') + '</td><td><input value="Elimina" type="button" onclick="elimina(' + entry.mese + ',' + entry.anno + ',' + entry.fotocop_id + ')"></td></tr>';
                     });
-                    usc += '</table>';
+                    usc += '</tbody></table></div>';
                     $("#output").html(usc);
                     $('#textarea2').blur();
+                    $('#input').show();
                 }
             })
         }
@@ -105,14 +131,16 @@
 </head>
 <body id="mysh" class="">
 
-<div style="width:390px;height: 50px">
-    <div style="float: left;margin-right: 10px">Cerca:</div>
+<div id="tutto">
+    <div class="cerca">Cerca:</div>
     <textarea title="" id="textarea2" class="example" rows="1"></textarea>
-    <div id="wait" style="float: right;display: none"><img src="./textext/spinner.gif"></div>
+    <div id="wait"><img src="./textext/spinner.gif"></div>
 </div>
-<div id="intest"></div>
-<div id="input"></div>
-<div id="output"></div>
+<div id="intest" style="display: none"></div>
+
+<div id="output">
+
+</div>
 
 <script type="text/javascript">
 
