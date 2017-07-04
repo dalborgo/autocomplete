@@ -16,12 +16,13 @@
     <script src="./textext/js/textext.plugin.focus.js" type="text/javascript" charset="utf-8"></script>
     <script src="./textext/js/textext.plugin.ajax.js" type="text/javascript" charset="utf-8"></script>
     <script src="./textext/js/textext.plugin.arrow.js" type="text/javascript" charset="utf-8"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.20/css/uikit.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.20/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.20/js/uikit-icons.min.js"></script>
     <script type="text/javascript">
-        var nome = 'Agricola Andreoli';
-        var id = 10;
 
-        Number.prototype.format = function(n, x, s, c) {
+
+        Number.prototype.format = function (n, x, s, c) {
             var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
                 num = this.toFixed(Math.max(0, ~~n));
 
@@ -37,13 +38,15 @@
         });
 
         $(function () {
+
             $('#textarea2').on('hideDropdown', function (data) {
                 //  var m=$('#textarea2').textext()[0];
-                var ex=$('#textarea2');
+                var ex = $('#textarea2');
                 var out = ex.val().split(',');
-                if(out.length>1) {
+                if (out.length > 1) {
                     nome = out[0];
                     id = out[1];
+                    copie_mensili = out[2];
                 }
                 ex.val('');
                 $('#intest').show();
@@ -71,6 +74,82 @@
                 }
             });
         }
+        function crea_uomo() {
+            $.ajax({
+                type: "GET",
+                url: "scrivi_u.php",
+                contentType: "application/json; charset=utf-8",
+                data: {
+                    nome_u: $('#nome_u').val()
+                },
+                datatype: "json",
+                error: function (textStatus, errorThrown) {
+                },
+                success: function (result) {
+                    window.location.href = "index.html";
+                }
+            });
+        }
+        function mod_uomo() {
+            $.ajax({
+                type: "GET",
+                url: "mod_u.php",
+                contentType: "application/json; charset=utf-8",
+                data: {
+                    id: id,
+                    nome_u: $('#nome_u23').val(),
+                    copie_mensili: $('#nome2_u23').val()
+                },
+                datatype: "json",
+                error: function (textStatus, errorThrown) {
+                },
+                success: function (result) {
+                    nome = $('#nome_u23').val(),
+                    copie_mensili = $('#nome2_u23').val(),
+                    cerca();
+                }
+            });
+        }
+        function crea_foto() {
+            $.ajax({
+                type: "GET",
+                url: "crea_foto.php",
+                contentType: "application/json; charset=utf-8",
+                data: {
+                    nome: $('#nome_fotocop').val(),
+                    tipo: $('#tipo').val(),
+                    costo_copia: $('#costo_copia').val(),
+                    id: id
+                },
+                datatype: "json",
+                error: function (textStatus, errorThrown) {
+
+                },
+                success: function (result) {
+                    cerca();
+                }
+            });
+        }
+
+        function mod_foto(ids) {
+            $.ajax({
+                type: "GET",
+                url: "mod_fot.php",
+                data: {
+                    nome: $('#nome_fotocop2' + ids).val(),
+                    tipo: $('#tipo2' + ids).val(),
+                    costo_copia: $('#costo_copia2' + ids).val(),
+                    cliente_id: id,
+                    id: ids
+                },
+                error: function (textStatus, errorThrown) {
+                    alert('errore');
+                },
+                success: function (result) {
+                    cerca();
+                }
+            });
+        }
         function elimina(mese, anno, ids) {
             $.ajax({
                 type: "GET",
@@ -86,9 +165,42 @@
                 }
             });
         }
+        function elimina_fotocop(ids) {
+            $.ajax({
+                type: "GET",
+                url: "elimina_fotocop.php",
+                contentType: "application/json; charset=utf-8",
+                data: {id: ids},
+                datatype: "json",
+                error: function (textStatus, errorThrown) {
+
+                },
+                success: function (result) {
+                    cerca();
+                }
+            });
+        }
+        function elimina_cliente(ids) {
+            $.ajax({
+                type: "GET",
+                url: "elimina_cliente.php",
+                contentType: "application/json; charset=utf-8",
+                data: {id: id},
+                datatype: "json",
+                error: function (textStatus, errorThrown) {
+
+                },
+                success: function (result) {
+                    window.location.href = "index.html";
+                }
+            });
+        }
+
 
         function cerca() {
             var mesil = ['', 'Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+            var year = new Date().getFullYear();
+            $(".modal_remove").remove();
             $.ajax({
                 type: "GET",
                 url: "ajaxsh.php",
@@ -101,27 +213,83 @@
                     // alert('Nessun risultato per i filtri selezionati!');
                 },
                 success: function (result) {
-
-                    $("#intest").html(nome + ' id: ' + id);
-
+                    var correct = (copie_mensili)?copie_mensili:'--';
+                    $("#intest").html(nome + ' id: ' + id + ' - Copie mensili: <span style="color:red">'+correct+'</span> <div class="agg_Uomo" style="display: inline">' +
+                        '<button id="nuovo_u23" class="uk-button uk-button-primary uk-margin-small-right" type="button" uk-toggle="target: #modal-exampleMOD">Modifica Cliente'
+                        +'</button>'+
+                        '<div id="modal-exampleMOD" uk-modal class="modal_remove">'+
+                    '<div class="uk-modal-dialog uk-modal-body">'+
+                        '<form> Id: ' +id+'<br><br>'+
+                        '<label for="nome_u23">Nome Cliente*: </label><input type="text" id="nome_u23" name="nome23_" style="width:240px" value="'+nome+'"> <p class="uk-text-left">'+
+                        '<label for="nome2_u23">Copie Mensili: </label><input type="text" id="nome2_u23" name="nome24_" style="width:240px" value="'+copie_mensili+'"> <p class="uk-text-left">'+
+                        '<button id="nuovo_u22" class="uk-button uk-modal-close uk-button-primary" type="button" onclick="mod_uomo()">Salva</button> </p> </form>'+
+                        '<button class="uk-modal-close-outside" type="button" uk-close></button> </div> </div> </div>');
                     var id_prec = -1;
+                    var count = 0;
                     var usc = '';
                     result.forEach(function (entry) {
                         if (id_prec !== entry.fotocop_id) {
-                            if (usc !== '')
-                                usc += '</tbody></table></div>';
-                            usc += "<div class='scheda'><form action='#' id='input" + entry.fotocop_id + "' class='modulo' style='' method='get'> <fieldset> <legend>" + entry.nome_lun + "</legend> <label for='mese'>Mese: </label><input type='text' id='mese" + entry.fotocop_id + "'> <label for='anno'>Anno: </label><input type='text' id='anno" + entry.fotocop_id + "' value='2017'> <label for='anno'>Fotocopie: </label><input type='text' id='fotocopie" + entry.fotocop_id + "'><input type='text' id='id_f" + entry.fotocop_id + "' value='" + entry.fotocop_id + "' style='display: none'> <input type='submit' id='invia" + entry.fotocop_id + "' value='Inserisci' onclick='scrivi(" + entry.fotocop_id + ")'> </fieldset> </form>";
 
-                            usc += '<table cellspacing="0"><thead><th>Mese</th><th>Anno</th><th style="text-align: right">Fotocopie</th><th style="text-align: right">Differenza</th><th></th></thead><tbody>';
+                            if (usc !== '') {
+                                if (count === 0) {
+                                    usc += '<td colspan="5" align="center"><input type="button" value="elimina fotocopiatrice id: ' + id_prec + '" onclick="elimina_fotocop(' + id_prec + ')"></td>';
+                                }
+                                usc += '</tbody></table></div>';
+                            }
+                            var nomino = (entry.foto_nome) ? entry.foto_nome : '';
+                            var seli = (entry.tipo == 'COLORI') ? 'selected="selected"' : '';
+                            usc += "<div class='scheda'><form id='input" + entry.fotocop_id + "' class='modulo' style='' method='get'> <fieldset> <legend>" + entry.nome_lun +
+                                "" + '&nbsp;&nbsp;<button id="nuovo_foto1' + entry.fotocop_id + '" class="uk-margin-small-right" type="button" uk-toggle="target: #modal-example' + entry.fotocop_id + '">Modifica</button><div id="modal-example' + entry.fotocop_id + '" uk-modal class="modal_remove"> ' +
+                                '<div class="uk-modal-dialog uk-modal-body"> ' +
+                                '<form>' +
+                                '<p>id: ' + entry.fotocop_id + '</p>' +
+                                '<label for="nome_fotocop2' + entry.fotocop_id + '">Nome Fotocopiatrice: </label><input type="text" id="nome_fotocop2' + entry.fotocop_id + '" value="' + nomino + '"><br>' +
+                                '<label for="tipo2' + entry.fotocop_id + '">Tipo Fotocopiatrice: </label><select id="tipo2' + entry.fotocop_id + '"><option value="BN">Bianco & Nero</option><option value="COLORI" ' + seli + '>Colori</option></select><br>' +
+                                '<label for="costo_copia2' + entry.fotocop_id + '">Costo Copia*: </label><input type="text" id="costo_copia2' + entry.fotocop_id + '" value="' + ((entry.costo_copia) * 1).format(3, 3, '.', ',') + '"><br>' +
+                                '<p class="uk-text-left"> <button id="nuovo_u3' + entry.fotocop_id + '" class="uk-button uk-modal-close uk-button-primary butt" type="button" onclick="mod_foto(' + entry.fotocop_id + ')">Salva</button></p> ' +
+                                '</form> ' +
+                                '<button class="uk-modal-close-outside" type="button" uk-close></button>' +
+                                '</div> ' +
+                                '</div>' +
+                                "</legend> <label for='mese'>N. Mese*: </label><input type='text' id='mese" + entry.fotocop_id + "'> <label for='anno'>Anno*: </label><input type='text' id='anno" + entry.fotocop_id + "' value='" + year + "'> <label for='anno'>N. Fotocop.*: </label><input type='text' id='fotocopie" + entry.fotocop_id + "'><input type='text' id='id_f" + entry.fotocop_id + "' value='" + entry.fotocop_id + "' style='display: none'> <input type='button' id='invia" + entry.fotocop_id + "' value='Inserisci' onclick='scrivi(" + entry.fotocop_id + ")'> </fieldset> </form>";
+
+                            usc += '<table cellspacing="0"><thead><th>Mese</th><th>Anno</th><th style="text-align: right">Fotocop.</th><th style="text-align: right">Differenza</th><th style="text-align: right">Costo (€ ' + ((entry.costo_copia) * 1).format(3, 3, '.', ',') + ')</th><th></th></thead><tbody>';
                             id_prec = entry.fotocop_id;
+                            count = 0;
                         }
-                        if(entry.anno)
-                            usc += '<tr><td>' + mesil[entry.mese] + '</td><td>' + entry.anno + '</td><td>' + ((entry.numero)*1).format(0, 3, '.', ',')+ '</td><td>' + ((entry.diff)*1).format(0, 3, '.', ',') + '</td><td><input value="Elimina" type="button" onclick="elimina(' + entry.mese + ',' + entry.anno + ',' + entry.fotocop_id + ')"></td></tr>';
+                        if (entry.anno) {
+                            var difi = (entry.diff == 0) ? '' : ((entry.diff) * 1).format(0, 3, '.', ',');
+                            var costoc = (entry.diff == 0) ? '' : '€ ' + ((entry.costo_copia) * 1 * (entry.diff)).format(2, 3, '.', ',');
+                            usc += '<tr><td>' + mesil[entry.mese] + '</td><td>' + entry.anno + '</td><td>' + ((entry.numero) * 1).format(0, 3, '.', ',') + '</td><td>' + difi + '</td><td>' + costoc + '</td><td><input value="Elimina" type="button" onclick="elimina(' + entry.mese + ',' + entry.anno + ',' + entry.fotocop_id + ')"></td></tr>';
+                            count++;
+                        }
                     });
-                    usc += '</tbody></table></div>';
+
+                    if (usc !== '') {
+                        if (count === 0) {
+                            usc += '<td colspan="5" align="center"><input type="button" value="elimina fotocopiatrice id: ' + id_prec + '" onclick="elimina_fotocop(' + id_prec + ')"></td>';
+                        }
+                        usc += '</tbody></table></div>';
+                    }
+                    if (usc === '') {
+                        usc += '<div class="agg_foto"><button id="nuovo_foto2" class="uk-button uk-button-primary uk-margin-small-right" type="button" onclick="elimina_cliente()">- Elimina Cliente</button></div>';
+                    }
+
+                    usc += '<div class="agg_foto"><button id="nuovo_foto" class="uk-button uk-button-primary uk-margin-small-right" type="button" uk-toggle="target: #modal-exampleSup">+ Fotocop.</button><div id="modal-exampleSup" uk-modal class="modal_remove"> ' +
+                        '<div class="uk-modal-dialog uk-modal-body"> ' +
+                        '<form>' +
+                        '<label for="nome">Nome Fotocopiatrice: </label><input type="text" id="nome_fotocop" name="nome_fotocop"><br>' +
+                        '<label for="tipo">Tipo Fotocopiatrice: </label><select name="tipo" id="tipo"><option value="BN">Bianco & Nero</option><option value="COLORI">Colori</option></select><br>' +
+                        '<label for="costo_copia">Costo Copia*: </label><input type="text" id="costo_copia" name="costo_copia"><br>' +
+                        '<p class="uk-text-left"> <button id="nuovo_u3" class="uk-button uk-modal-close uk-button-primary" type="button" onclick="crea_foto()">Salva</button></p> ' +
+                        '</form> ' +
+                        '<button class="uk-modal-close-outside" type="button" uk-close></button>'
+                    '</div> ' +
+                    '</div>' +
+                    '</div>';
                     $("#output").html(usc);
                     $('#textarea2').blur();
-                    $('#input').show();
+                    //$('#input').show();
                 }
             })
         }
@@ -136,11 +304,33 @@
     <textarea title="" id="textarea2" class="example" rows="1"></textarea>
     <div id="wait"><img src="./textext/spinner.gif"></div>
 </div>
+<div class="agg_Uomo">
+    <button id="nuovo_u" class="uk-button uk-button-primary uk-margin-small-right" type="button"
+            uk-toggle="target: #modal-example">+ Cliente
+    </button>
+    <div id="modal-example" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body">
+            <form>
+                <label for="nome_u">Nome Cliente*: </label><input type="text" id="nome_u" name="nome_"
+                                                                  style="width:240px">
+                <p class="uk-text-left">
+                    <button id="nuovo_u2" class="uk-button uk-modal-close uk-button-primary" type="button"
+                            onclick="crea_uomo()">
+                        Salva
+                    </button>
+                </p>
+            </form>
+            <button class="uk-modal-close-outside" type="button" uk-close></button>
+        </div>
+    </div>
+</div>
+<div style="clear: both"></div>
 <div id="intest" style="display: none"></div>
 
 <div id="output">
 
 </div>
+
 
 <script type="text/javascript">
 
@@ -176,7 +366,11 @@
 
         });
 
+
 </script>
+
+<!--
+-->
 
 </body>
 </html>

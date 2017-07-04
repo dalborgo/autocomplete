@@ -23,13 +23,13 @@ body#mysh {
 }
 
 form.modulo{
-    width: 500px;
+    width: 510px;
     margin-bottom: 0.5em;
 }
 table{
     margin-bottom: 1em;
     font-size: 11pt;
-    width: 500px;
+    width: 510px;
     border: 1px solid gray;
 }
 
@@ -45,6 +45,10 @@ form.modulo input[type='text']{
     width:50px;
 }
 
+form.modulo input[type='text']:nth-of-type(1){
+    width:20px;
+}
+
 form.modulo label{
     margin-left: 0.5ex;
     font-size: 12pt;
@@ -57,11 +61,12 @@ form.modulo input{
 #intest{
     margin: 2em 0.5em 1em;
     background-color: ivory;
-    border: 1px solid lightgray;
+    border: 1px solid gray;
     border-radius: 17px;
     display: table;
     font-size: 16pt;
     padding: 0.5ex 1ex;
+    font-variant: small-caps;
 }
 
 #output{
@@ -91,9 +96,9 @@ legend{
     font-size: 12pt;
     border: #bccccb solid thin;
     padding: 0.5ex 1ex;
-    background-color: #f5f5f5;
+    background-color: lightgoldenrodyellow;
     border-radius: 5px;
-    color: black;
+    color: #000;
 }
 
 #tutto {
@@ -105,6 +110,7 @@ legend{
     padding: 25px 10px 0;
     width: 390px;
     margin: 2ex;
+    float: left;
 }
 
 .scheda{
@@ -118,6 +124,7 @@ legend{
     color:transparent;
     -webkit-background-clip: text;
     background-clip: text;
+    -webkit-text-stroke: thin black;
 }
 
 .stroke { color: black; -webkit-text-fill-color: white; /* Will override color (regardless of order) */ -webkit-text-stroke-width: thin; -webkit-text-stroke-color: black; }
@@ -133,21 +140,40 @@ tbody tr:nth-child(even) { background-color: #ccc; }
 tbody tr:nth-child(2n) {
     background-color: lightslategrey;
     color: white;
-    background-color: #008080;
-
+    /*background-color: #008080;*/
 }
 th{
     padding:0.6ex;
 }
 
-.nod-success {
-
-}
-
-.nod-error {
-
-}
 
 .nod-error-message {
     color: red;
+}
+
+.agg_foto {
+    float: left;
+    margin-top: 17px;
+}
+
+#modal-example {
+
+}
+
+#modal-example .uk-modal-body{
+    max-width: 450px;
+}
+
+#nuovo_foto.uk-button-primary, #nuovo_u.uk-button-primary, #nuovo_u2.uk-button-primary, #nuovo_u3.uk-button-primary, #nuovo_foto2.uk-button-primary, #nuovo_u23.uk-button-primary, #nuovo_u22.uk-button-primary, p.uk-text-left .butt {
+    border-radius: 5px;
+    background-color: #4682B4;
+}
+#nuovo_foto.uk-button-primary:hover, #nuovo_u.uk-button-primary:hover,#nuovo_u2.uk-button-primary:hover, #nuovo_u3.uk-button-primary:hover, #nuovo_foto2.uk-button-primary:hover,#nuovo_u23.uk-button-primary:hover, #nuovo_u22.uk-button-primary:hover, p.uk-text-left .butt:hover {
+    background-color: #008080;
+}
+
+.agg_Uomo {
+    margin-left: 20px;
+    display: table;
+    padding-top: 36px;
 }

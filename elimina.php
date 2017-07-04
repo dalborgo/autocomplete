@@ -2,7 +2,7 @@
 include_once "sqlkit.php";
 header('Content-Type: application/json');
 if (!isset($_GET['id']))
-    $id = "2";
+    $id = "0";
 else
     $id = $_GET['id'];
 if (!isset($_GET['mese']))

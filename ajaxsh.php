@@ -33,7 +33,6 @@ while (($h = mysqli_fetch_assoc($dr))) {
     if (isset($out[$i - 1]['numero']) && isset($h['numero']) && $out[$i - 1]['fotocop_id'] == $h['fotocop_id']) {
         $tot = $out[$i - 1]['numero'] - $h['numero'];
         $out[$i - 1]['diff'] = $tot;
-
     }
     $out[] = $h;
     $i++;
